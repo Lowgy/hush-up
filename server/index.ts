@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const http = require('http');
 const app = express();
 const server = http.createServer(app);
@@ -10,6 +11,14 @@ const io = new Server(server, {
     origin: '*',
   },
 });
+
+const corsOptions = {
+  origin: '*',
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 const roomCodes: any = {};
 
@@ -50,7 +59,9 @@ app.post('/createRoom', (req: any, res: any) => {
 
   roomCodes[roomId] = privateCode;
 
-  res.json({ roomId, privateCode });
+  console.log(roomId, privateCode);
+
+  return res.json({ roomId, privateCode });
 });
 
 server.listen(3001, () => {
