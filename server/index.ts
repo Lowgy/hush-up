@@ -53,6 +53,10 @@ io.on('connection', (socket) => {
   });
 });
 
+app.get('/', (req: any, res: any) => {
+  return res.send('hush-app-server API');
+});
+
 app.post('/createRoom', (req: any, res: any) => {
   const roomId = generateUniqueRoomId();
   const privateCode = generateUniquePrivateCode();
