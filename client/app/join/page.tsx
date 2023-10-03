@@ -1,33 +1,88 @@
 'use client';
 
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
 import { useContext } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { SocketContext } from '@/context/socket';
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { SocketContext } from '@/context/socket';
+import { toast } from '@/components/ui/use-toast';
 
-export default function JoinPage() {
+const FormSchema = z.object({
+  roomCode: z
+    .string()
+    .min(2, { message: 'Room Code must be at least 4 characters' }),
+});
+
+export function RoomCodeInputForm() {
   const socket = useContext(SocketContext);
+  const router = useRouter();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
 
-  const handleJoinRoom = () => {
-    console.log('TETSETST');
-  };
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    fetch(`http://localhost:3001/getRoom/${data.roomCode}`, { method: 'GET' })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error joining room:', error);
+      });
+    toast({
+      title: 'Entered Room Code:',
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+  }
 
   return (
-    <div className="flex flex-col gap-y-4 items-center">
-      <div className="w-full max-w-sm items-center gap-1.5">
-        <Label htmlFor="code">Room Code</Label>
-        <Input
-          type="text"
-          id="code"
-          max={20}
-          placeholder="Enter 4 Digit Room Code"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
+        <FormField
+          control={form.control}
+          name="roomCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Room Code</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter 4 Digit Room Code" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <Button className="w-full" onClick={handleJoinRoom}>
-        Join Room
-      </Button>
+        <Button type="submit" className="w-full">
+          Join Room
+        </Button>
+      </form>
+    </Form>
+  );
+}
+
+export default function JoinPage() {
+  return (
+    <div className="flex flex-col gap-y-4 items-center">
+      <RoomCodeInputForm />
       <Link href="/" className="underline text-sm">
         Go Back
       </Link>

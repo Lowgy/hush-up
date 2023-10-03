@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Providers } from './providers';
 import { Inter } from 'next/font/google';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
             <h1 className="text-4xl font-semibold">Hush Up!</h1>
             {children}
           </main>
+          <Toaster />
         </body>
       </html>
     </Providers>

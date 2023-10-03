@@ -17,7 +17,7 @@ export default function CreatePage() {
   const router = useRouter();
 
   const handleCreateRoom = () => {
-    fetch('http://hush-up-server.vercel.app/createRoom', { method: 'POST' })
+    fetch('http://localhost:3001/createRoom', { method: 'POST' })
       .then((res) => res.json())
       .then((data) => {
         console.log('Room created:', data);
