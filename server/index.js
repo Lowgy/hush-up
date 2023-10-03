@@ -20,9 +20,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const roomCodes: any = {};
+const roomCodes = {};
 
-const generateRandomString = (length: any) => {
+const generateRandomString = (length) => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -53,11 +53,11 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('/', (req: any, res: any) => {
+app.get('/', (req, res) => {
   return res.send('hush-app-server API');
 });
 
-app.post('/createRoom', (req: any, res: any) => {
+app.post('/createRoom', (req, res) => {
   const roomId = generateUniqueRoomId();
   const privateCode = generateUniquePrivateCode();
 
