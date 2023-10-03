@@ -11,13 +11,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function CreatePage() {
+  const router = useRouter();
+
   const handleCreateRoom = () => {
     fetch('http://localhost:3001/createRoom', { method: 'POST' })
       .then((res) => res.json())
       .then((data) => {
         console.log('Room created:', data);
+        router.push(`/room/${data.id}`);
       })
       .catch((error) => {
         console.error('Error creating room:', error);
