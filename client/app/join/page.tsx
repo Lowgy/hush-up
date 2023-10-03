@@ -1,11 +1,15 @@
 'use client';
 
+import { useContext } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { SocketContext } from '@/context/socket';
 
 export default function JoinPage() {
+  const socket = useContext(SocketContext);
+
   const handleJoinRoom = () => {
     console.log('TETSETST');
   };
