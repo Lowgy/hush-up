@@ -1,7 +1,11 @@
 'use client';
 import { SocketContext, socket } from '@/context/socket';
 
-export function Providers(children: any) {
+type Props = {
+  children: JSX.Element;
+};
+
+export function Providers({ children }: Props) {
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
