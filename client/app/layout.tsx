@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { SocketContext, socket } from '@/context/socket';
+import { Providers } from './providers';
 import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SocketContext.Provider value={socket}>
+    <Providers>
       <html lang="en">
         <body className={inter.className}>
           <main className="flex min-h-screen flex-col items-center gap-y-4 p-24">
@@ -25,6 +25,6 @@ export default function RootLayout({
           </main>
         </body>
       </html>
-    </SocketContext.Provider>
+    </Providers>
   );
 }
