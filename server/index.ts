@@ -61,7 +61,7 @@ app.post('/createRoom', (req: any, res: any) => {
 
   console.log(roomId, privateCode);
 
-  return res.json({ roomId, privateCode });
+  return res.json({ id: roomId, code: privateCode });
 });
 
 server.listen(3001, () => {
