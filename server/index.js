@@ -1,12 +1,10 @@
 const express = require('express');
-const cors = require('cors');
 const http = require('http');
 const app = express();
+const cors = require('cors');
 const server = http.createServer(app);
 
-import { Server } from 'socket.io';
-
-const io = new Server(server, {
+const io = require('socket.io')(server, {
   cors: {
     origin: '*',
   },
@@ -20,7 +18,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const roomCodes = {};
+const roomCodes = [];
 
 const generateRandomString = (length) => {
   const characters =
@@ -57,11 +55,29 @@ app.get('/', (req, res) => {
   return res.send('hush-app-server API');
 });
 
+app.get('/getRooms', (req, res) => {
+  res.send(roomCodes);
+});
+
+app.get('/getRoom/:id', (req, res) => {
+  const { id } = req.params;
+  let joinRoom = false;
+  console.log(roomCodes.length, id);
+  for (let i = 0; i < roomCodes.length; i++) {
+    if (id == roomCodes[i].code) {
+      console.log(id);
+      joinRoom = true;
+    }
+  }
+
+  return res.send(joinRoom);
+});
+
 app.post('/createRoom', (req, res) => {
   const roomId = generateUniqueRoomId();
   const privateCode = generateUniquePrivateCode();
 
-  roomCodes[roomId] = privateCode;
+  roomCodes.push({ id: roomId, code: privateCode });
 
   console.log(roomId, privateCode);
 
