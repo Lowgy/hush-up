@@ -17,6 +17,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const roomCodes = [];
 
@@ -59,13 +61,12 @@ app.get('/getRooms', (req, res) => {
   res.send(roomCodes);
 });
 
-app.get('/getRoom/:id', (req, res) => {
+app.get('/joinRoom/:id', (req, res) => {
   const { id } = req.params;
   let joinRoom = false;
   console.log(roomCodes.length, id);
   for (let i = 0; i < roomCodes.length; i++) {
     if (id == roomCodes[i].code) {
-      console.log(id);
       joinRoom = true;
     }
   }
@@ -77,11 +78,19 @@ app.post('/createRoom', (req, res) => {
   const roomId = generateUniqueRoomId();
   const privateCode = generateUniquePrivateCode();
 
-  roomCodes.push({ id: roomId, code: privateCode });
+  roomCodes.push({
+    id: roomId,
+    code: privateCode,
+    rounds: req.body.rounds,
+    gameType: req.body.gameType,
+  });
 
-  console.log(roomId, privateCode);
-
-  return res.json({ id: roomId, code: privateCode });
+  return res.json({
+    id: roomId,
+    code: privateCode,
+    rounds: req.body.rounds,
+    gameType: req.body.gameType,
+  });
 });
 
 server.listen(3001, () => {

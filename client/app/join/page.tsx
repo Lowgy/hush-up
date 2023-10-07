@@ -36,7 +36,7 @@ function RoomCodeInputForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    fetch(`http://localhost:3001/getRoom/${data.roomCode}`, { method: 'GET' })
+    fetch(`http://localhost:3001/joinRoom/${data.roomCode}`, { method: 'GET' })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
