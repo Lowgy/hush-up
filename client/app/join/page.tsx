@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import UserContext from '@/context/user';
 
 const FormSchema = z.object({
   roomCode: z
@@ -30,6 +31,7 @@ const FormSchema = z.object({
 
 function RoomCodeInputForm() {
   const socket = useContext(SocketContext);
+  const user = useContext(UserContext);
   const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -40,6 +42,17 @@ function RoomCodeInputForm() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        if (data.canJoin) {
+          socket.emit(
+            'joinRoom',
+            data.roomInfo.id,
+            data.roomInfo.code,
+            user.userName
+          );
+          socket.on('joinedRoom', () => {
+            router.push(`/room/${data.roomInfo.id}`);
+          });
+        }
       })
       .catch((error) => {
         console.error('Error joining room:', error);

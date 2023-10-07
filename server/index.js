@@ -3,6 +3,7 @@ const http = require('http');
 const app = express();
 const cors = require('cors');
 const server = http.createServer(app);
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
 const io = require('socket.io')(server, {
   cors: {
@@ -20,7 +21,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const roomCodes = [];
+const gameRooms = [];
 
 const generateRandomString = (length) => {
   const characters =
@@ -43,11 +44,19 @@ const generateUniquePrivateCode = () => {
 };
 
 io.on('connection', (socket) => {
-  socket.on('joinRoom', (roomId, privateCode) => {
-    if (roomCodes[roomId] && roomCodes[roomId] === privateCode) {
-      socket.join(roomId);
-      socket.emit('joinedRoom', roomId);
-    } else {
+  socket.on('joinRoom', (roomId, privateCode, userName) => {
+    let foundRoom = false;
+    for (let i = 0; i < gameRooms.length; i++) {
+      if (gameRooms[i].id === roomId && gameRooms[i].code === privateCode) {
+        console.log(
+          `User ${userName} joined ${roomId} with code ${privateCode}`
+        );
+        foundRoom = true;
+        socket.join(roomId);
+        socket.emit('joinedRoom');
+      }
+    }
+    if (!foundRoom) {
       socket.emit('invalidCode', 'Invalid Code');
     }
   });
@@ -58,27 +67,29 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getRooms', (req, res) => {
-  res.send(roomCodes);
+  res.send(gameRooms);
 });
 
 app.get('/joinRoom/:id', (req, res) => {
   const { id } = req.params;
   let joinRoom = false;
-  console.log(roomCodes.length, id);
-  for (let i = 0; i < roomCodes.length; i++) {
-    if (id == roomCodes[i].code) {
+  let roomId = '';
+  console.log(gameRooms.length, id);
+  for (let i = 0; i < gameRooms.length; i++) {
+    if (id == gameRooms[i].code) {
       joinRoom = true;
+      roomId = gameRooms[i];
     }
   }
 
-  return res.send(joinRoom);
+  return res.send({ roomInfo: roomId, canJoin: joinRoom });
 });
 
 app.post('/createRoom', (req, res) => {
   const roomId = generateUniqueRoomId();
   const privateCode = generateUniquePrivateCode();
 
-  roomCodes.push({
+  gameRooms.push({
     id: roomId,
     code: privateCode,
     rounds: req.body.rounds,

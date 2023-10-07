@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
@@ -13,8 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { SocketContext } from '@/context/socket';
+import UserContext from '@/context/user';
 
 export default function CreatePage() {
+  const socket = useContext(SocketContext);
+  const user = useContext(UserContext);
   const router = useRouter();
   const [value, setValue] = useState('');
   const [rounds, setRounds] = useState(0);
