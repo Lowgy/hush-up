@@ -36,7 +36,6 @@ export default function CreatePage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('Room created:', data);
         socket.emit('joinRoom', data.id, data.code, user.userName);
         socket.on('joinedRoom', () => {
           setVip(true);

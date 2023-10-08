@@ -48,9 +48,6 @@ io.on('connection', (socket) => {
     let foundRoom = false;
     for (let i = 0; i < gameRooms.length; i++) {
       if (gameRooms[i].id === roomId && gameRooms[i].code === privateCode) {
-        console.log(
-          `User ${userName} joined ${roomId} with code ${privateCode}`
-        );
         const { user } = addUser({
           id: socket.id,
           name: userName,

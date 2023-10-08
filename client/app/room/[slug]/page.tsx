@@ -9,24 +9,6 @@ import UserContext from '@/context/user';
 import { SparklesIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const testUsers = [
-  {
-    name: 'Lowgy',
-  },
-  {
-    name: 'Robeet',
-  },
-  {
-    name: 'Pagan',
-  },
-  {
-    name: 'Miche',
-  },
-  {
-    name: 'Signy',
-  },
-];
-
 export default function RoomPage() {
   const socket = useContext(SocketContext);
   const { roomInfo, roomUsers, setRoomUsers } = useContext(RoomContext);
@@ -34,9 +16,9 @@ export default function RoomPage() {
 
   useEffect(() => {
     socket.on('roomData', ({ users }: any) => {
-      console.log(users);
       setRoomUsers(users);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomUsers]);
 
   return (
@@ -52,21 +34,6 @@ export default function RoomPage() {
         <h1>Players</h1>
         <Separator />
         <div className="grid grid-cols-3 gap-4 py-4 px-4">
-          {/* {testUsers.map((user) => (
-            <div
-              className="bg-[#FFD700] p-4 rounded text-center text-black"
-              key={user.name}
-            >
-              <h1>
-                {userName === user.name ? 'You' : user.name}{' '}
-                {vip && userName === user.name ? (
-                  <span className="text-sm text-gray-500">(VIP)</span>
-                ) : (
-                  ''
-                )}
-              </h1>
-            </div>
-          ))} */}
           {roomUsers.map((user) => (
             <div
               className="bg-[#FFD700] p-4 rounded text-center text-black"

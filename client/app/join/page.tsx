@@ -54,20 +54,25 @@ function RoomCodeInputForm() {
           socket.on('joinedRoom', () => {
             setRoomInfo(data.roomInfo);
             router.push(`/room/${data.roomInfo.id}`);
+            toast({
+              title: 'Successfully joined!',
+              variant: 'default',
+            });
           });
         }
       })
       .catch((error) => {
         console.error('Error joining room:', error);
+        toast({
+          title: 'Error joining room:',
+          variant: 'destructive',
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <code className="text-white">{error}</code>
+            </pre>
+          ),
+        });
       });
-    toast({
-      title: 'Entered Room Code:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
   }
 
   return (
