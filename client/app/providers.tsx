@@ -1,4 +1,5 @@
 'use client';
+import { RoomProvider } from '@/context/room';
 import { SocketContext, socket } from '@/context/socket';
 import { UserProvider } from '@/context/user';
 
@@ -8,8 +9,10 @@ type Props = {
 
 export function Providers({ children }: Props) {
   return (
-    <UserProvider>
-      <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
-    </UserProvider>
+    <SocketContext.Provider value={socket}>
+      <UserProvider>
+        <RoomProvider>{children}</RoomProvider>
+      </UserProvider>
+    </SocketContext.Provider>
   );
 }

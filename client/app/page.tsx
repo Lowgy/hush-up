@@ -42,11 +42,17 @@ export default function Home() {
         {error && <p className="text-red-500 text-sm">A name is required!</p>}
       </div>
       <div className="flex flex-row gap-x-6">
-        <Button onClick={() => handleNameCreation('create')}>
+        <Button
+          onClick={() => handleNameCreation('create')}
+          className="bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
+        >
           Create Game
           <PlayIcon className="ml-2 h-4 w-4" />
         </Button>
-        <Button onClick={() => handleNameCreation('join')}>
+        <Button
+          onClick={() => handleNameCreation('join')}
+          className="bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
+        >
           Join Game
           <UsersIcon className="ml-2 h-4 w-4" />
         </Button>

@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import UserContext from '@/context/user';
+import RoomContext from '@/context/room';
 
 const FormSchema = z.object({
   roomCode: z
@@ -32,6 +33,7 @@ const FormSchema = z.object({
 function RoomCodeInputForm() {
   const socket = useContext(SocketContext);
   const user = useContext(UserContext);
+  const { setRoomInfo } = useContext(RoomContext);
   const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -50,6 +52,7 @@ function RoomCodeInputForm() {
             user.userName
           );
           socket.on('joinedRoom', () => {
+            setRoomInfo(data.roomInfo);
             router.push(`/room/${data.roomInfo.id}`);
           });
         }
@@ -93,7 +96,7 @@ function RoomCodeInputForm() {
 
 export default function JoinPage() {
   return (
-    <div className="flex flex-col gap-y-4 items-center">
+    <div className="flex flex-col gap-y-4 items-center w-full">
       <RoomCodeInputForm />
       <Link href="/" className="underline text-sm">
         Go Back

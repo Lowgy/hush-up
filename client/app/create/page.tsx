@@ -15,10 +15,12 @@ import {
 } from '@/components/ui/select';
 import { SocketContext } from '@/context/socket';
 import UserContext from '@/context/user';
+import RoomContext from '@/context/room';
 
 export default function CreatePage() {
   const socket = useContext(SocketContext);
-  const user = useContext(UserContext);
+  const { setVip } = useContext(UserContext);
+  const { setRoomInfo } = useContext(RoomContext);
   const router = useRouter();
   const [value, setValue] = useState('');
   const [rounds, setRounds] = useState(0);
@@ -34,6 +36,8 @@ export default function CreatePage() {
       .then((res) => res.json())
       .then((data) => {
         console.log('Room created:', data);
+        setVip(true);
+        setRoomInfo(data);
         router.push(`/room/${data.id}`);
       })
       .catch((error) => {
@@ -48,20 +52,20 @@ export default function CreatePage() {
   const gameTypes: any = { chill: 'Chill', active: 'Active', crazy: 'Crazy' };
 
   return (
-    <div className="flex flex-col gap-y-4 items-center">
+    <div className="flex flex-col gap-y-4 items-center w-full">
       <div className="w-full max-w-sm items-center gap-1.5">
-        <Label htmlFor="email">How many rounds?</Label>
+        <Label className="text-white">How many rounds?</Label>
         <Input
           type="number"
           id="number"
           min={1}
           max={20}
-          placeholder=""
+          placeholder="Select rounds"
           onChange={handleRoundSelection}
         />
       </div>
       <div className="w-full max-w-sm items-center gap-1.5">
-        <Label>Choose Game Type</Label>
+        <Label className="text-white">Choose Game Type</Label>
         <Select value={value} onValueChange={setValue}>
           <SelectTrigger>
             <SelectValue placeholder="Select game type" aria-label={value}>
@@ -88,9 +92,9 @@ export default function CreatePage() {
         </Select>
       </div>
       <Button
-        className="w-full"
         onClick={handleCreateRoom}
         disabled={!value || !rounds}
+        className="disabled:bg-gray-400 disabled:text-white bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
       >
         Create Room
       </Button>
