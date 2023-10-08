@@ -86,10 +86,16 @@ function RoomCodeInputForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button
+          type="submit"
+          className="w-full disabled:bg-gray-400 disabled:text-white bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
+        >
           Join Room
         </Button>
       </form>
+      <Link href="/" className="underline text-sm text-white">
+        Go Back
+      </Link>
     </Form>
   );
 }

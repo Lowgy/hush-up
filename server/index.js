@@ -51,13 +51,34 @@ io.on('connection', (socket) => {
         console.log(
           `User ${userName} joined ${roomId} with code ${privateCode}`
         );
+        const { user } = addUser({
+          id: socket.id,
+          name: userName,
+          room: roomId,
+        });
         foundRoom = true;
         socket.join(roomId);
         socket.emit('joinedRoom');
+        setTimeout(() => {
+          io.to(roomId).emit('roomData', {
+            room: roomId,
+            users: getUsersInRoom(roomId),
+          });
+        }, 500);
       }
     }
     if (!foundRoom) {
       socket.emit('invalidCode', 'Invalid Code');
+    }
+  });
+
+  socket.on('disconnect', () => {
+    const user = removeUser(socket.id);
+    if (user) {
+      io.to(user.room).emit('message', {
+        user: 'admin',
+        text: `${user.name} disconnected.`,
+      });
     }
   });
 });

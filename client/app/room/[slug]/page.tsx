@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import RoomContext from '@/context/room';
 import { SocketContext } from '@/context/socket';
 import { Separator } from '@/components/ui/separator';
@@ -29,15 +29,21 @@ const testUsers = [
 
 export default function RoomPage() {
   const socket = useContext(SocketContext);
-  const { roomInfo } = useContext(RoomContext);
+  const { roomInfo, roomUsers, setRoomUsers } = useContext(RoomContext);
   const { userName, vip } = useContext(UserContext);
+
+  useEffect(() => {
+    socket.on('roomData', ({ users }: any) => {
+      console.log(users);
+      setRoomUsers(users);
+    });
+  }, [roomUsers]);
 
   return (
     <>
       <section className="flex flex-col text-center text-white">
         <h1>
-          Join at{' '}
-          <span className="font-semibold">hush-up-app-client.vercel.app</span>
+          Join at <span className="font-semibold">hush-up.vercel.app</span>
         </h1>
         <h2>Enter room code</h2>
         <h2 className="text-4xl text-[#FFD700]">{roomInfo.code || 'Code'}</h2>
@@ -46,7 +52,22 @@ export default function RoomPage() {
         <h1>Players</h1>
         <Separator />
         <div className="grid grid-cols-3 gap-4 py-4 px-4">
-          {testUsers.map((user) => (
+          {/* {testUsers.map((user) => (
+            <div
+              className="bg-[#FFD700] p-4 rounded text-center text-black"
+              key={user.name}
+            >
+              <h1>
+                {userName === user.name ? 'You' : user.name}{' '}
+                {vip && userName === user.name ? (
+                  <span className="text-sm text-gray-500">(VIP)</span>
+                ) : (
+                  ''
+                )}
+              </h1>
+            </div>
+          ))} */}
+          {roomUsers.map((user) => (
             <div
               className="bg-[#FFD700] p-4 rounded text-center text-black"
               key={user.name}

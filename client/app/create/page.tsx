@@ -19,6 +19,7 @@ import RoomContext from '@/context/room';
 
 export default function CreatePage() {
   const socket = useContext(SocketContext);
+  const user = useContext(UserContext);
   const { setVip } = useContext(UserContext);
   const { setRoomInfo } = useContext(RoomContext);
   const router = useRouter();
@@ -36,9 +37,12 @@ export default function CreatePage() {
       .then((res) => res.json())
       .then((data) => {
         console.log('Room created:', data);
-        setVip(true);
-        setRoomInfo(data);
-        router.push(`/room/${data.id}`);
+        socket.emit('joinRoom', data.id, data.code, user.userName);
+        socket.on('joinedRoom', () => {
+          setVip(true);
+          setRoomInfo(data);
+          router.push(`/room/${data.id}`);
+        });
       })
       .catch((error) => {
         console.error('Error creating room:', error);
@@ -98,7 +102,7 @@ export default function CreatePage() {
       >
         Create Room
       </Button>
-      <Link href="/" className="underline text-sm">
+      <Link href="/" className="underline text-sm text-white">
         Go Back
       </Link>
     </div>
