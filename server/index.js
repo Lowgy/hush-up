@@ -21,8 +21,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const gameRooms = [];
-
 const generateRandomString = (length) => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -42,6 +40,12 @@ const generateUniqueRoomId = () => {
 const generateUniquePrivateCode = () => {
   return generateRandomString(4);
 };
+
+const getGameTypeChallenges = (gameType, rounds) => {
+  return 'nothing right now';
+};
+
+const gameRooms = [];
 
 io.on('connection', (socket) => {
   socket.on('joinRoom', (roomId, privateCode, userName) => {
@@ -66,6 +70,23 @@ io.on('connection', (socket) => {
     }
     if (!foundRoom) {
       socket.emit('invalidCode', 'Invalid Code');
+    }
+  });
+
+  socket.on('startTimer', (roomId) => {
+    for (let i = 0; i < gameRooms.length; i++) {
+      if (gameRooms[i].id === roomId) {
+        let countdown = 10;
+        const countdownInterval = setInterval(() => {
+          if (countdown > 0) {
+            io.to(roomId).emit('countdownUpdate', countdown);
+            countdown--;
+          } else {
+            clearInterval(countdownInterval);
+            io.to(roomId).emit('countdownComplete');
+          }
+        }, 1000);
+      }
     }
   });
 
