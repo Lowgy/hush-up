@@ -14,11 +14,17 @@ export default function RoomPage() {
   const socket = useContext(SocketContext);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
   const { roomInfo, roomUsers, setRoomUsers } = useContext(RoomContext);
-  const { userName, vip } = useContext(UserContext);
+  const { userName, vip, role, setRole } = useContext(UserContext);
 
   const handleStartGame = () => {
     socket.emit('startTimer', roomInfo.id);
+  };
+
+  const handleFlipCards = () => {
+    if (isFlipped) return;
+    socket.emit('getRoles', roomInfo.id);
   };
 
   useEffect(() => {
@@ -31,6 +37,15 @@ export default function RoomPage() {
     socket.on('countdownComplete', () => {
       setCountdown(0);
       setGameStarted(true);
+    });
+
+    socket.on('roles', (data: any) => {
+      console.log(data);
+      setRole(data);
+    });
+
+    socket.on('flipCards', () => {
+      setIsFlipped(true);
     });
 
     return () => {
@@ -98,7 +113,14 @@ export default function RoomPage() {
       {countdown !== 0 && countdown !== null ? (
         <CountdownOverlay countdown={countdown} />
       ) : gameStarted ? (
-        <RoleCard />
+        <>
+          <RoleCard role={role} isFlipped={isFlipped} />
+          {vip && gameStarted && !isFlipped ? (
+            <Button onClick={handleFlipCards}>Flip Cards!</Button>
+          ) : (
+            vip && gameStarted && isFlipped && <Button>Challenge Time!</Button>
+          )}
+        </>
       ) : (
         ''
       )}

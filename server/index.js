@@ -90,6 +90,25 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('getRoles', (roomId) => {
+    const users = getUsersInRoom(roomId);
+    const roles = ['safe', 'not safe'];
+    let randomRoles = [];
+    for (let i = 0; i < users.length; i++) {
+      if (roles.length === 2) {
+        const randomIndex = Math.floor(Math.random() * roles.length);
+        randomRoles.push(roles[randomIndex]);
+        roles.splice(randomIndex, 1);
+      } else {
+        randomRoles.push(roles[0]);
+      }
+    }
+    for (let i = 0; i < users.length; i++) {
+      io.to(users[i].id).emit('roles', randomRoles[i]);
+    }
+    io.to(roomId).emit('flipCards');
+  });
+
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
     if (user) {

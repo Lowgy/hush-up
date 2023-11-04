@@ -11,6 +11,8 @@ interface UserContextType {
   setUsername: Dispatch<SetStateAction<string>>;
   vip: boolean;
   setVip: Dispatch<SetStateAction<boolean>>;
+  role: string;
+  setRole: Dispatch<SetStateAction<string>>;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -18,6 +20,8 @@ const UserContext = createContext<UserContextType>({
   setUsername: () => {},
   vip: false,
   setVip: () => {},
+  role: '',
+  setRole: () => {},
 });
 
 type ContextProviderProps = {
@@ -27,9 +31,12 @@ type ContextProviderProps = {
 export const UserProvider = ({ children }: ContextProviderProps) => {
   const [userName, setUsername] = useState('');
   const [vip, setVip] = useState(false);
+  const [role, setRole] = useState('');
 
   return (
-    <UserContext.Provider value={{ userName, setUsername, vip, setVip }}>
+    <UserContext.Provider
+      value={{ userName, setUsername, vip, setVip, role, setRole }}
+    >
       {children}
     </UserContext.Provider>
   );
