@@ -1,6 +1,7 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import RoomContext from '@/context/room';
 import { SocketContext } from '@/context/socket';
 import { Separator } from '@/components/ui/separator';
@@ -9,13 +10,22 @@ import UserContext from '@/context/user';
 import { SparklesIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import RoleCard from '@/components/role-card';
+import ChallengeSelection from '@/components/challenge-selection';
 
 export default function RoomPage() {
   const socket = useContext(SocketContext);
+  const router = useRouter();
   const [countdown, setCountdown] = useState<number | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
-  const { roomInfo, roomUsers, setRoomUsers } = useContext(RoomContext);
+  const [showChallengeSelection, setShowChallengeSelection] = useState(false);
+  const {
+    roomInfo,
+    roomUsers,
+    setRoomUsers,
+    roomChallenges,
+    setRoomChallenges,
+  } = useContext(RoomContext);
   const { userName, vip, role, setRole } = useContext(UserContext);
 
   const handleStartGame = () => {
@@ -27,10 +37,18 @@ export default function RoomPage() {
     socket.emit('getRoles', roomInfo.id);
   };
 
+  const handleChallengeClick = () => {
+    socket.emit(
+      'getChallenges',
+      roomInfo.id,
+      roomInfo.gameType,
+      roomInfo.rounds
+    );
+  };
+
   useEffect(() => {
     setGameStarted(false);
     socket.on('countdownUpdate', (data: number) => {
-      console.log(data);
       setCountdown(data);
     });
 
@@ -40,8 +58,12 @@ export default function RoomPage() {
     });
 
     socket.on('roles', (data: any) => {
-      console.log(data);
       setRole(data);
+    });
+
+    socket.on('challenges', (data: any) => {
+      setRoomChallenges(data);
+      setShowChallengeSelection(true);
     });
 
     socket.on('flipCards', () => {
@@ -113,14 +135,23 @@ export default function RoomPage() {
       {countdown !== 0 && countdown !== null ? (
         <CountdownOverlay countdown={countdown} />
       ) : gameStarted ? (
-        <>
-          <RoleCard role={role} isFlipped={isFlipped} />
-          {vip && gameStarted && !isFlipped ? (
-            <Button onClick={handleFlipCards}>Flip Cards!</Button>
-          ) : (
-            vip && gameStarted && isFlipped && <Button>Challenge Time!</Button>
-          )}
-        </>
+        (!showChallengeSelection && (
+          <>
+            <RoleCard role={role} isFlipped={isFlipped} />
+            {vip && gameStarted && !isFlipped ? (
+              <Button onClick={handleFlipCards}>Flip Cards!</Button>
+            ) : (
+              vip &&
+              gameStarted &&
+              isFlipped && (
+                <Button onClick={handleChallengeClick}>Challenge Time!</Button>
+              )
+            )}
+          </>
+        )) ||
+        (showChallengeSelection && (
+          <ChallengeSelection challenges={roomChallenges} />
+        ))
       ) : (
         ''
       )}

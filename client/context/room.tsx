@@ -22,6 +22,8 @@ interface RoomContextType {
   setRoomInfo: Dispatch<SetStateAction<RoomInfo>>;
   roomUsers: Array<RoomUser>;
   setRoomUsers: Dispatch<SetStateAction<Array<RoomUser>>>;
+  roomChallenges: Array<string>;
+  setRoomChallenges: Dispatch<SetStateAction<Array<string>>>;
 }
 
 const RoomContext = createContext<RoomContextType>({
@@ -29,6 +31,8 @@ const RoomContext = createContext<RoomContextType>({
   setRoomInfo: () => {},
   roomUsers: [],
   setRoomUsers: () => {},
+  roomChallenges: [],
+  setRoomChallenges: () => {},
 });
 
 type ContextProviderProps = {
@@ -38,10 +42,18 @@ type ContextProviderProps = {
 export const RoomProvider = ({ children }: ContextProviderProps) => {
   const [roomInfo, setRoomInfo] = useState<RoomInfo>({});
   const [roomUsers, setRoomUsers] = useState<Array<RoomUser>>([]);
+  const [roomChallenges, setRoomChallenges] = useState<Array<string>>([]);
 
   return (
     <RoomContext.Provider
-      value={{ roomInfo, setRoomInfo, roomUsers, setRoomUsers }}
+      value={{
+        roomInfo,
+        setRoomInfo,
+        roomUsers,
+        setRoomUsers,
+        roomChallenges,
+        setRoomChallenges,
+      }}
     >
       {children}
     </RoomContext.Provider>

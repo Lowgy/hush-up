@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const server = http.createServer(app);
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
+const challenges = require('./challenges.json');
 
 const io = require('socket.io')(server, {
   cors: {
@@ -41,8 +42,16 @@ const generateUniquePrivateCode = () => {
   return generateRandomString(4);
 };
 
-const getGameTypeChallenges = (gameType, rounds) => {
-  return 'nothing right now';
+const getGameTypeChallenges = (gameType) => {
+  const gameTypeChallenges = [];
+  for (let i = 0; i < challenges.length; i++) {
+    if (challenges[i].name.toLowerCase() === gameType) {
+      for (let j = 0; j < challenges[i].challenges.length; j++) {
+        gameTypeChallenges.push(challenges[i].challenges[j]);
+      }
+    }
+  }
+  return gameTypeChallenges;
 };
 
 const gameRooms = [];
@@ -107,6 +116,11 @@ io.on('connection', (socket) => {
       io.to(users[i].id).emit('roles', randomRoles[i]);
     }
     io.to(roomId).emit('flipCards');
+  });
+
+  socket.on('getChallenges', (roomId, gameType, rounds) => {
+    const challenges = getGameTypeChallenges(gameType, rounds);
+    io.to(roomId).emit('challenges', challenges);
   });
 
   socket.on('disconnect', () => {
