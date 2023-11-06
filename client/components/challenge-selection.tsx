@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button } from './ui/button';
+import UserContext from '@/context/user';
 
 export default function ChallengeSelection({
   challenges,
@@ -8,6 +9,7 @@ export default function ChallengeSelection({
 }) {
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSpinning, setIsSpinning] = useState(false);
+  const { vip } = useContext(UserContext);
 
   const sound = new Audio('/sounds/click.mp3');
 
@@ -54,7 +56,7 @@ export default function ChallengeSelection({
           </div>
         ))}
       </div>
-      <Button onClick={handleSpin}>Spin</Button>
+      {vip && <Button onClick={handleSpin}>Spin</Button>}
     </>
   );
 }

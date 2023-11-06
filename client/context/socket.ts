@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 
 const url =
   process.env.NODE_ENV === 'production'
-    ? 'https://hush-up-server.vercel.app'
+    ? 'https://hush-up-app-server.onrender.com'
     : 'http://localhost:3001';
 
 export const socket = io(`${url}`);

@@ -35,7 +35,7 @@ function RoomCodeInputForm() {
   const user = useContext(UserContext);
   const url =
     process.env.NODE_ENV === 'production'
-      ? 'https://hush-up-server.vercel.app'
+      ? 'https://hush-up-app-server.onrender.com'
       : 'http://localhost:3001';
   const { setRoomInfo } = useContext(RoomContext);
   const router = useRouter();
