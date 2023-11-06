@@ -27,7 +27,11 @@ export default function CreatePage() {
   const [rounds, setRounds] = useState(0);
 
   const handleCreateRoom = () => {
-    fetch('http://localhost:3001/createRoom', {
+    const url =
+      process.env.NODE_ENV === 'production'
+        ? 'https://hush-up-server.vercel.app'
+        : 'http://localhost:3001';
+    fetch(`${url}/createRoom`, {
       method: 'POST',
       body: JSON.stringify({ rounds: rounds, gameType: value }),
       headers: {

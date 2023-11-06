@@ -33,6 +33,10 @@ const FormSchema = z.object({
 function RoomCodeInputForm() {
   const socket = useContext(SocketContext);
   const user = useContext(UserContext);
+  const url =
+    process.env.NODE_ENV === 'production'
+      ? 'https://hush-up-server.vercel.app'
+      : 'http://localhost:3001';
   const { setRoomInfo } = useContext(RoomContext);
   const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -40,7 +44,7 @@ function RoomCodeInputForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    fetch(`http://localhost:3001/joinRoom/${data.roomCode}`, { method: 'GET' })
+    fetch(`${url}/joinRoom/${data.roomCode}`, { method: 'GET' })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
