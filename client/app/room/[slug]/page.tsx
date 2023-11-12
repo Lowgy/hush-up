@@ -19,6 +19,8 @@ export default function RoomPage() {
   const [gameStarted, setGameStarted] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showChallengeSelection, setShowChallengeSelection] = useState(false);
+  const sound = new Audio('/sounds/click.mp3');
+
   const {
     roomInfo,
     roomUsers,
@@ -149,9 +151,7 @@ export default function RoomPage() {
             )}
           </>
         )) ||
-        (showChallengeSelection && (
-          <ChallengeSelection challenges={roomChallenges} />
-        ))
+        (showChallengeSelection && <ChallengeSelection />)
       ) : (
         ''
       )}
