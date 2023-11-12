@@ -4,13 +4,14 @@ import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import RoomContext from '@/context/room';
 import { SocketContext } from '@/context/socket';
-import { Separator } from '@/components/ui/separator';
 import UserContext from '@/context/user';
 
 import { SparklesIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import RoleCard from '@/components/role-card';
 import ChallengeSelection from '@/components/challenge-selection';
+import Lever from '@/components/lever';
 
 export default function RoomPage() {
   const socket = useContext(SocketContext);
@@ -18,8 +19,9 @@ export default function RoomPage() {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [leverPulled, setLeverPulled] = useState(false);
   const [showChallengeSelection, setShowChallengeSelection] = useState(false);
-  const sound = new Audio('/sounds/click.mp3');
+  const [randomChallenge, setRandomChallenge] = useState('');
 
   const {
     roomInfo,
@@ -48,6 +50,11 @@ export default function RoomPage() {
     );
   };
 
+  const leverClick = () => {
+    console.log('lever clicked');
+    socket.emit('leverPulled', roomInfo.id);
+  };
+
   useEffect(() => {
     setGameStarted(false);
     socket.on('countdownUpdate', (data: number) => {
@@ -63,6 +70,13 @@ export default function RoomPage() {
       setRole(data);
     });
 
+    socket.on('randomChallenge', (data: any) => {
+      setRandomChallenge(data);
+      setRoomChallenges((prev) => {
+        return prev.filter((challenge) => challenge !== data);
+      });
+    });
+
     socket.on('challenges', (data: any) => {
       setRoomChallenges(data);
       setShowChallengeSelection(true);
@@ -70,6 +84,10 @@ export default function RoomPage() {
 
     socket.on('flipCards', () => {
       setIsFlipped(true);
+    });
+
+    socket.on('leverPulled', () => {
+      setLeverPulled(true);
     });
 
     return () => {
@@ -151,7 +169,15 @@ export default function RoomPage() {
             )}
           </>
         )) ||
-        (showChallengeSelection && <ChallengeSelection />)
+        (showChallengeSelection && (
+          <>
+            <Lever leverClick={leverClick} leverPulled={leverPulled} />
+            <ChallengeSelection
+              leverPulled={leverPulled}
+              randomChallenge={randomChallenge}
+            />
+          </>
+        ))
       ) : (
         ''
       )}

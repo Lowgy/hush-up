@@ -121,6 +121,12 @@ io.on('connection', (socket) => {
   socket.on('getChallenges', (roomId, gameType, rounds) => {
     const challenges = getGameTypeChallenges(gameType, rounds);
     io.to(roomId).emit('challenges', challenges);
+    const randomChallenge = Math.floor(Math.random() * challenges.length);
+    io.to(roomId).emit('randomChallenge', challenges[randomChallenge]);
+  });
+
+  socket.on('leverPulled', (roomId) => {
+    io.to(roomId).emit('leverPulled');
   });
 
   socket.on('disconnect', () => {
