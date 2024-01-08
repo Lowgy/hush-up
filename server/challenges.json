@@ -2,46 +2,206 @@
   {
     "name": "Chill",
     "challenges": [
-      "Challenge 1",
-      "Challenge 2",
-      "Challenge 3",
-      "Challenge 4",
-      "Challenge 5",
-      "Challenge 6",
-      "Challenge 7",
-      "Challenge 8",
-      "Challenge 9",
-      "Challenge 10"
+      {
+        "name": "Challenge 1",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 2",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 3",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 4",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 5",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 6",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 7",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 8",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 9",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 10",
+        "description": "INSERT DESCRIPTION HERE",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      }
     ]
   },
   {
     "name": "Active",
     "challenges": [
-      "Challenge 1",
-      "Challenge 2",
-      "Challenge 3",
-      "Challenge 4",
-      "Challenge 5",
-      "Challenge 6",
-      "Challenge 7",
-      "Challenge 8",
-      "Challenge 9",
-      "Challenge 10"
+      {
+        "name": "Challenge 1",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 2",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 3",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 4",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 5",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 6",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 7",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 8",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 9",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 10",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      }
     ]
   },
   {
     "name": "Crazy",
     "challenges": [
-      "Challenge 1",
-      "Challenge 2",
-      "Challenge 3",
-      "Challenge 4",
-      "Challenge 5",
-      "Challenge 6",
-      "Challenge 7",
-      "Challenge 8",
-      "Challenge 9",
-      "Challenge 10"
+      {
+        "name": "Challenge 1",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 2",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 3",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 4",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 5",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 6",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 7",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 8",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 9",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      },
+      {
+        "name": "Challenge 10",
+        "rules": "INSERT RULES HERE",
+        "consequence": 2,
+        "reward": 1
+      }
     ]
   }
 ]

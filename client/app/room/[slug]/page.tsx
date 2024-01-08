@@ -12,6 +12,8 @@ import { Separator } from '@/components/ui/separator';
 import RoleCard from '@/components/role-card';
 import ChallengeSelection from '@/components/challenge-selection';
 import Lever from '@/components/lever';
+import ChallengeHowTo from '@/components/challenge-how-to';
+import { Challenge } from '@/types/types';
 
 export default function RoomPage() {
   const socket = useContext(SocketContext);
@@ -21,7 +23,8 @@ export default function RoomPage() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [leverPulled, setLeverPulled] = useState(false);
   const [showChallengeSelection, setShowChallengeSelection] = useState(false);
-  const [randomChallenge, setRandomChallenge] = useState('');
+  const [showHowTo, setHowTo] = useState(false);
+  const [randomChallenge, setRandomChallenge] = useState<Challenge>();
 
   const {
     roomInfo,
@@ -51,8 +54,11 @@ export default function RoomPage() {
   };
 
   const leverClick = () => {
-    console.log('lever clicked');
     socket.emit('leverPulled', roomInfo.id);
+  };
+
+  const handleContinue = () => {
+    socket.emit('continueGame', roomInfo.id);
   };
 
   useEffect(() => {
@@ -79,6 +85,7 @@ export default function RoomPage() {
 
     socket.on('challenges', (data: any) => {
       setRoomChallenges(data);
+      console.log(data);
       setShowChallengeSelection(true);
     });
 
@@ -88,6 +95,10 @@ export default function RoomPage() {
 
     socket.on('leverPulled', () => {
       setLeverPulled(true);
+    });
+
+    socket.on('continueGame', () => {
+      setHowTo(true);
     });
 
     return () => {
@@ -159,23 +170,45 @@ export default function RoomPage() {
           <>
             <RoleCard role={role} isFlipped={isFlipped} />
             {vip && gameStarted && !isFlipped ? (
-              <Button onClick={handleFlipCards}>Flip Cards!</Button>
+              <Button
+                onClick={handleFlipCards}
+                className="bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
+              >
+                Flip Cards!
+              </Button>
             ) : (
               vip &&
               gameStarted &&
               isFlipped && (
-                <Button onClick={handleChallengeClick}>Challenge Time!</Button>
+                <Button
+                  onClick={handleChallengeClick}
+                  className="bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
+                >
+                  Challenge Time!
+                </Button>
               )
             )}
           </>
         )) ||
         (showChallengeSelection && (
           <>
-            <Lever leverClick={leverClick} leverPulled={leverPulled} />
-            <ChallengeSelection
-              leverPulled={leverPulled}
-              randomChallenge={randomChallenge}
-            />
+            {!showHowTo ? (
+              <>
+                <Lever leverClick={leverClick} leverPulled={leverPulled} />
+                <ChallengeSelection
+                  leverPulled={leverPulled}
+                  randomChallenge={randomChallenge}
+                />
+                <Button
+                  onClick={handleContinue}
+                  className="mt-16 bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
+                >
+                  Continue
+                </Button>
+              </>
+            ) : (
+              <ChallengeHowTo randomChallenge={randomChallenge} />
+            )}
           </>
         ))
       ) : (

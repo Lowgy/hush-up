@@ -1,12 +1,13 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import RoomContext from '@/context/room';
+import { Challenge } from '@/types/types';
 import '../app/styles.css';
 
 //create props type
 type ChallengeSelectionProps = {
   leverPulled: boolean;
-  randomChallenge: string;
+  randomChallenge?: Challenge;
 };
 
 export default function ChallengeSelection({
@@ -16,6 +17,8 @@ export default function ChallengeSelection({
   const randomChallengeRef = useRef<HTMLDivElement>(null);
   const [randomChallengeY, setRandomChallengeY] = useState(0);
   const controls = useAnimation();
+
+  console.log(randomChallenge);
 
   useEffect(() => {
     if (randomChallengeRef.current) {
@@ -39,12 +42,12 @@ export default function ChallengeSelection({
           animate={controls}
           initial={{ y: randomChallengeY }}
         >
-          {randomChallenge}
+          {randomChallenge?.name}
         </motion.div>
         <div
           className={`mt-32 w-full h-full bg-white p-4 rounded-md flex justify-center items-center z-50`}
         >
-          <h1 className="text-2xl text-black">{randomChallenge}</h1>
+          <h1 className="text-2xl text-black">{randomChallenge?.name}</h1>
         </div>
       </div>
       <div className="absolute top-1/2 bg-yellow-400 w-full h-3/4 mt-4 rounded-md z-0"></div>

@@ -129,6 +129,10 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('leverPulled');
   });
 
+  socket.on('continueGame', (roomId) => {
+    io.to(roomId).emit('continueGame');
+  });
+
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
     if (user) {
