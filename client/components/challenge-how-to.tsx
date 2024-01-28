@@ -3,10 +3,12 @@ import { Challenge } from '@/types/types';
 
 type ChallengeHowToProps = {
   randomChallenge?: Challenge;
+  handleQuiteTimeClick: () => void;
 };
 
 export default function ChallengeHowTo({
   randomChallenge,
+  handleQuiteTimeClick,
 }: ChallengeHowToProps) {
   return (
     <section className="w-full mt-8">
@@ -47,7 +49,10 @@ export default function ChallengeHowTo({
             If the challenge is failed, then you will owe{' '}
             {randomChallenge?.consequence} drinks
           </p>
-          <Button className="w-full h-12 flex items-center justify-center text-lg font-semibold bg-black text-white hover:text-black hover:bg-[#FFD700] hover:border-2 hover:border-black">
+          <Button
+            onClick={handleQuiteTimeClick}
+            className="w-full h-12 flex items-center justify-center text-lg font-semibold bg-black text-white hover:text-black hover:bg-[#FFD700] hover:border-2 hover:border-black"
+          >
             Quiet Time!
           </Button>
         </div>

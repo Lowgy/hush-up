@@ -24,6 +24,7 @@ export default function RoomPage() {
   const [leverPulled, setLeverPulled] = useState(false);
   const [showChallengeSelection, setShowChallengeSelection] = useState(false);
   const [showHowTo, setHowTo] = useState(false);
+  const [showVotes, setShowVotes] = useState(false);
   const [randomChallenge, setRandomChallenge] = useState<Challenge>();
 
   const {
@@ -59,6 +60,15 @@ export default function RoomPage() {
 
   const handleContinue = () => {
     socket.emit('continueGame', roomInfo.id);
+  };
+
+  const handleQuiteTimeClick = () => {
+    socket.emit('startVote', roomInfo.id);
+  };
+
+  const handleVoteClick = (option: string) => {
+    socket.emit('vote', roomInfo.id, option);
+    setShowVotes(false);
   };
 
   useEffect(() => {
@@ -99,6 +109,18 @@ export default function RoomPage() {
 
     socket.on('continueGame', () => {
       setHowTo(true);
+    });
+
+    socket.on('startVote', () => {
+      setShowVotes(true);
+    });
+
+    socket.on('votePassed', () => {
+      console.log('vote passed');
+    });
+
+    socket.on('voteFailed', () => {
+      console.log('vote failed');
     });
 
     return () => {
@@ -207,7 +229,23 @@ export default function RoomPage() {
                 </Button>
               </>
             ) : (
-              <ChallengeHowTo randomChallenge={randomChallenge} />
+              <>
+                <ChallengeHowTo
+                  randomChallenge={randomChallenge}
+                  handleQuiteTimeClick={handleQuiteTimeClick}
+                />
+
+                {showVotes && (
+                  <>
+                    <Button onClick={() => handleVoteClick('passed')}>
+                      Passed
+                    </Button>
+                    <Button onClick={() => handleVoteClick('passed')}>
+                      Failed
+                    </Button>
+                  </>
+                )}
+              </>
             )}
           </>
         ))

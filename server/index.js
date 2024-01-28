@@ -133,6 +133,38 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('continueGame');
   });
 
+  socket.on('startVote', (roomId) => {
+    io.to(roomId).emit('startVote');
+    for (let i = 0; i < gameRooms.length; i++) {
+      if (gameRooms[i].id === roomId) {
+        gameRooms[i].votes = { passed: 0, failed: 0, totalVotes: 0 };
+      }
+    }
+  });
+
+  socket.on('vote', (roomId, vote) => {
+    const users = getUsersInRoom(roomId);
+    const room = gameRooms.filter((room) => room.id === roomId);
+    if (room[0].votes.totalVotes !== users.length - 1) {
+      if (vote === 'passed') {
+        room[0].votes.passed++;
+        room[0].votes.totalVotes++;
+      }
+      if (vote === 'failed') {
+        room[0].votes.failed++;
+        room[0].votes.totalVotes++;
+      }
+    } else {
+      if (room[0].votes.passed > room[0].votes.failed) {
+        io.to(roomId).emit('votePassed');
+      } else {
+        io.to(roomId).emit('voteFailed');
+      }
+    }
+    console.log(room[0].votes.totalVotes, users.length - 1);
+    io.to(roomId).emit('vote', room[0].votes);
+  });
+
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
     if (user) {
