@@ -14,6 +14,7 @@ import ChallengeSelection from '@/components/challenge-selection';
 import Lever from '@/components/lever';
 import ChallengeHowTo from '@/components/challenge-how-to';
 import { Challenge } from '@/types/types';
+import RoundVoting from '@/components/round-voting';
 
 export default function RoomPage() {
   const socket = useContext(SocketContext);
@@ -25,16 +26,19 @@ export default function RoomPage() {
   const [showChallengeSelection, setShowChallengeSelection] = useState(false);
   const [showHowTo, setHowTo] = useState(false);
   const [showVotes, setShowVotes] = useState(false);
+  const [roundResult, setRoundResult] = useState('nothing');
   const [randomChallenge, setRandomChallenge] = useState<Challenge>();
 
   const {
     roomInfo,
+    setRoomInfo,
     roomUsers,
     setRoomUsers,
     roomChallenges,
     setRoomChallenges,
   } = useContext(RoomContext);
-  const { userName, vip, role, setRole } = useContext(UserContext);
+  const { userName, vip, role, setRole, setCastedVote } =
+    useContext(UserContext);
 
   const handleStartGame = () => {
     socket.emit('startTimer', roomInfo.id);
@@ -67,8 +71,9 @@ export default function RoomPage() {
   };
 
   const handleVoteClick = (option: string) => {
+    setCastedVote(true);
+    console.log('clicked');
     socket.emit('vote', roomInfo.id, option);
-    setShowVotes(false);
   };
 
   useEffect(() => {
@@ -115,11 +120,15 @@ export default function RoomPage() {
       setShowVotes(true);
     });
 
-    socket.on('votePassed', () => {
+    socket.on('votePassed', (data: any) => {
+      setRoundResult('passed');
+      setRoomInfo(data);
       console.log('vote passed');
     });
 
-    socket.on('voteFailed', () => {
+    socket.on('voteFailed', (data: any) => {
+      setRoundResult('failed');
+      setRoomInfo(data);
       console.log('vote failed');
     });
 
@@ -221,29 +230,28 @@ export default function RoomPage() {
                   leverPulled={leverPulled}
                   randomChallenge={randomChallenge}
                 />
-                <Button
-                  onClick={handleContinue}
-                  className="mt-16 bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
-                >
-                  Continue
-                </Button>
+                {vip && (
+                  <Button
+                    onClick={handleContinue}
+                    className="mt-16 bg-[#FFD700] text-black hover:text-white hover:bg-yellow-300"
+                    disabled={!leverPulled}
+                  >
+                    Continue
+                  </Button>
+                )}
               </>
             ) : (
               <>
-                <ChallengeHowTo
-                  randomChallenge={randomChallenge}
-                  handleQuiteTimeClick={handleQuiteTimeClick}
-                />
-
-                {showVotes && (
-                  <>
-                    <Button onClick={() => handleVoteClick('passed')}>
-                      Passed
-                    </Button>
-                    <Button onClick={() => handleVoteClick('passed')}>
-                      Failed
-                    </Button>
-                  </>
+                {!showVotes ? (
+                  <ChallengeHowTo
+                    randomChallenge={randomChallenge}
+                    handleQuiteTimeClick={handleQuiteTimeClick}
+                  />
+                ) : (
+                  <RoundVoting
+                    handleVoteClick={handleVoteClick}
+                    roundResult={roundResult}
+                  />
                 )}
               </>
             )}

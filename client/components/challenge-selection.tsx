@@ -18,8 +18,6 @@ export default function ChallengeSelection({
   const [randomChallengeY, setRandomChallengeY] = useState(0);
   const controls = useAnimation();
 
-  console.log(randomChallenge);
-
   useEffect(() => {
     if (randomChallengeRef.current) {
       const y = randomChallengeRef.current.getBoundingClientRect().top;

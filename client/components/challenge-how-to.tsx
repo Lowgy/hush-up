@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import UserContext from '@/context/user';
 import { Button } from '@/components/ui/button';
 import { Challenge } from '@/types/types';
 
@@ -10,6 +12,8 @@ export default function ChallengeHowTo({
   randomChallenge,
   handleQuiteTimeClick,
 }: ChallengeHowToProps) {
+  const { vip } = useContext(UserContext);
+
   return (
     <section className="w-full mt-8">
       <div className="container mx-auto bg-[#FFD700] rounded-lg dark:bg-gray-800">
@@ -49,12 +53,14 @@ export default function ChallengeHowTo({
             If the challenge is failed, then you will owe{' '}
             {randomChallenge?.consequence} drinks
           </p>
-          <Button
-            onClick={handleQuiteTimeClick}
-            className="w-full h-12 flex items-center justify-center text-lg font-semibold bg-black text-white hover:text-black hover:bg-[#FFD700] hover:border-2 hover:border-black"
-          >
-            Quiet Time!
-          </Button>
+          {vip && (
+            <Button
+              onClick={handleQuiteTimeClick}
+              className="w-full h-12 flex items-center justify-center text-lg font-semibold bg-black text-white hover:text-black hover:bg-[#FFD700] hover:border-2 hover:border-black"
+            >
+              Quiet Time!
+            </Button>
+          )}
         </div>
       </div>
     </section>
