@@ -54,7 +54,7 @@ const getGameTypeChallenges = (gameType) => {
   return gameTypeChallenges;
 };
 
-const gameRooms = [];
+let gameRooms = [];
 
 io.on('connection', (socket) => {
   socket.on('joinRoom', (roomId, privateCode, userName) => {
@@ -100,14 +100,16 @@ io.on('connection', (socket) => {
   });
 
   socket.on('getRoles', (roomId) => {
-    const users = getUsersInRoom(roomId);
+    let users = getUsersInRoom(roomId);
     const roles = ['safe', 'not safe'];
     let randomRoles = [];
     for (let i = 0; i < users.length; i++) {
-      if (roles.length === 2) {
-        const randomIndex = Math.floor(Math.random() * roles.length);
-        randomRoles.push(roles[randomIndex]);
-        roles.splice(randomIndex, 1);
+      const randomIndex = Math.floor(Math.random() * users.length);
+      const temp = users[i];
+      users[i] = users[randomIndex];
+      users[randomIndex] = temp;
+      if (i === 0) {
+        randomRoles.push(roles[1]);
       } else {
         randomRoles.push(roles[0]);
       }
@@ -144,32 +146,57 @@ io.on('connection', (socket) => {
 
   socket.on('vote', (roomId, vote) => {
     const users = getUsersInRoom(roomId);
-    const room = gameRooms.filter((room) => room.id === roomId);
-    room[0].votes.totalVotes++;
+    //get room index
+    const roomIndex = gameRooms.findIndex((room) => room.id === roomId);
+    console.log(gameRooms[roomIndex].rounds);
+    gameRooms[roomIndex].votes.totalVotes++;
     if (
-      room[0].votes.totalVotes !== users.length - 1 ||
+      gameRooms[roomIndex].votes.totalVote !== users.length - 1 ||
       users.length - 1 === 1
     ) {
       if (vote === 'passed') {
-        console.log(vote);
-        room[0].votes.passed++;
+        gameRooms[roomIndex].votes.passed++;
       }
       if (vote === 'failed') {
-        console.log(vote);
-        room[0].votes.failed++;
+        gameRooms[roomIndex].votes.failed++;
       }
     }
-    console.log(room[0].votes.totalVotes, users.length - 1);
-    if (room[0].votes.totalVotes === users.length - 1) {
-      if (room[0].votes.passed > room[0].votes.failed) {
-        room[0].rounds--;
-        io.to(roomId).emit('votePassed', room[0]);
+    if (gameRooms[roomIndex].votes.totalVotes === users.length - 1) {
+      if (
+        gameRooms[roomIndex].votes.passed > gameRooms[roomIndex].votes.failed
+      ) {
+        gameRooms[roomIndex].rounds--;
+        io.to(roomId).emit('votePassed', gameRooms[roomIndex]);
       } else {
-        room[0].rounds--;
-        io.to(roomId).emit('voteFailed', room[0]);
+        gameRooms[roomIndex].rounds--;
+        io.to(roomId).emit('voteFailed', gameRooms[roomIndex]);
       }
     }
-    io.to(roomId).emit('vote', room[0].votes);
+    io.to(roomId).emit('vote', gameRooms[roomIndex].votes);
+  });
+
+  socket.on('voteTimerEnded', (roomId) => {
+    const roomIndex = gameRooms.findIndex((room) => room.id === roomId);
+    console.log(gameRooms[roomIndex].rounds);
+    gameRooms[roomIndex].rounds--;
+    if (gameRooms[roomIndex].votes.passed > gameRooms[roomIndex].votes.failed) {
+      io.to(roomId).emit('votePassed', gameRooms[roomIndex]);
+    } else if (
+      gameRooms[roomIndex].votes.failed > gameRooms[roomIndex].votes.passed
+    ) {
+      io.to(roomId).emit('voteFailed', gameRooms[roomIndex]);
+    } else {
+      io.to(roomId).emit('voteTied', gameRooms[roomIndex]);
+    }
+  });
+
+  socket.on('nextRound', (roomId) => {
+    io.to(roomId).emit('nextRound');
+  });
+
+  socket.on('endGame', (roomId) => {
+    io.to(roomId).emit('endGame');
+    gameRooms = gameRooms.filter((room) => room.id !== roomId);
   });
 
   socket.on('disconnect', () => {

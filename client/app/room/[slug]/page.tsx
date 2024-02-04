@@ -76,6 +76,19 @@ export default function RoomPage() {
     socket.emit('vote', roomInfo.id, option);
   };
 
+  const voteTimerEnded = () => {
+    setCastedVote(true);
+    socket.emit('voteTimerEnded', roomInfo.id);
+  };
+
+  const handleEndGameClick = () => {
+    socket.emit('endGame', roomInfo.id);
+  };
+
+  const handleNextRoundClick = () => {
+    socket.emit('nextRound', roomInfo.id);
+  };
+
   useEffect(() => {
     setGameStarted(false);
     socket.on('countdownUpdate', (data: number) => {
@@ -88,6 +101,7 @@ export default function RoomPage() {
     });
 
     socket.on('roles', (data: any) => {
+      console.log(data, userName);
       setRole(data);
     });
 
@@ -130,6 +144,29 @@ export default function RoomPage() {
       setRoundResult('failed');
       setRoomInfo(data);
       console.log('vote failed');
+    });
+
+    socket.on('voteTied', (data: any) => {
+      setRoundResult('tied');
+      setRoomInfo(data);
+      console.log('vote tied');
+    });
+
+    socket.on('nextRound', () => {
+      setRoundResult('nothing');
+      setRoomInfo((prev) => {
+        return { ...prev, votes: { totalVotes: 0, passed: 0, failed: 0 } };
+      });
+      setCastedVote(false);
+      setLeverPulled(false);
+      setIsFlipped(false);
+      setShowVotes(false);
+      setHowTo(false);
+      setShowChallengeSelection(false);
+    });
+
+    socket.on('endGame', () => {
+      router.push('/');
     });
 
     return () => {
@@ -250,6 +287,9 @@ export default function RoomPage() {
                 ) : (
                   <RoundVoting
                     handleVoteClick={handleVoteClick}
+                    handleEndGameClick={handleEndGameClick}
+                    handleNextRoundClick={handleNextRoundClick}
+                    voteTimerEnded={voteTimerEnded}
                     roundResult={roundResult}
                   />
                 )}
